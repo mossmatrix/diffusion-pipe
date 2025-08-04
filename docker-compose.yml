@@ -1,0 +1,27 @@
+name: diffusion-pipe
+services:
+  diffusion-pipe:
+    build: .
+    image: diffusion-pipe
+    environment:
+      - DATASET_PATH=~/diffusion-pipe/datasets
+      - OUTPUT_PATH=~/diffusion-pipe/output
+      - CONFIG_PATH=~/diffusion-pipe/configs
+      - MODELS_PATH=~/models
+      - NUM_GPUS=1
+      - CONFIG_FILE=/configs/config.toml
+    volumes:
+      - ${DATASET_PATH:-~/diffusion-pipe/datasets}:/datasets
+      - ${MODELS_PATH:-~/models}:/models:ro
+      - ${OUTPUT_PATH:-~/diffusion-pipe/output}:/output
+      - ${CONFIG_PATH:-~/diffusion-pipe/configs}:/configs
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    tty: true
+    stdin_open: true 
